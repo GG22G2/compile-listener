@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/12 21:13
  */
 public class SpringbootPortShow implements ToolWindowFactory {

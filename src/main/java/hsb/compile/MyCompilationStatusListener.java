@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 import hsb.compile.service.SocketService;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/8 20:30
  */
 public class MyCompilationStatusListener implements CompilationStatusListener {

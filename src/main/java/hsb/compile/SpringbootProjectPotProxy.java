@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/12 18:40
  */
 public class SpringbootProjectPotProxy {

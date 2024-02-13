@@ -1,7 +1,7 @@
 package hsb.compile.springboot;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/10 0:55
  */
 

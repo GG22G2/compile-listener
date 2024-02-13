@@ -5,7 +5,7 @@ import hsb.compile.service.PortPeer;
 import javax.swing.*;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/13 12:02
  */
 public interface PortBtnClickCallback {

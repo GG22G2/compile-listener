@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/9 23:03
  */
 public class TaskTimeLine {

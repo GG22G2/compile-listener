@@ -11,7 +11,7 @@ import com.intellij.psi.PsiDocumentManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @author 胡帅博
+ * @author hsb
  * @date 2024/2/9 0:03
  */
 public class CompilerDemo {
