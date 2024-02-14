@@ -30,7 +30,7 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-<!--        <compiler.task execute="BEFORE" implementation="hsb.compile.BeforeCompilerListener"/>-->
+<!--        <compiler.task execute="BEFORE" implementation="hsb.compile.demo.BeforeCompilerListener"/>-->
         <postStartupActivity implementation="hsb.compile.InitOnProjectActivity"/>
         <toolWindow id="springboot端口" factoryClass="hsb.compile.window.SpringbootPortShow"/>
     </extensions>

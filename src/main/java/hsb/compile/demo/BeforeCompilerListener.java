@@ -1,4 +1,4 @@
-package hsb.compile;
+package hsb.compile.demo;
 
 import com.intellij.openapi.compiler.*;
 import org.jetbrains.annotations.NotNull;
