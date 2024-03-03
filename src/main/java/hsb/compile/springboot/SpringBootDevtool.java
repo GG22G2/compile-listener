@@ -99,12 +99,16 @@ public class SpringBootDevtool {
             }
         });
 
+
+
+
+
         //这个是项目级别的通知
         connection.subscribe(ExecutionManager.EXECUTION_TOPIC, new ExecutionListener() {
             @Override
             public void processStarted(@NotNull String executorId, @NotNull ExecutionEnvironment env, @NotNull ProcessHandler handler) {
                 LOG.info("执行命令：" + executorId + ":" + env.getRunProfile().getName());
-                if (!executorId.equals("Run")) {
+                if (!(executorId.equals("Run")||executorId.equals("Debug"))) {
                     return;
                 }
 
@@ -176,6 +180,11 @@ public class SpringBootDevtool {
 
         //获取当前启动的springboot项目监听的端口列表
         new Thread(() -> {
+            try {
+                Thread.sleep(1000*17);
+            } catch (InterruptedException e) {
+
+            }
             int findCount = 0;
             List<Integer> ports = new ArrayList<>();
             while (!stopSignal.get() && findCount < 2) {

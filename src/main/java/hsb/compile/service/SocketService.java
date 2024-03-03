@@ -71,8 +71,8 @@ public final class SocketService implements Disposable {
     }
 
     public void send(String projectName) {
-        //发送后就认为客户端会重新编译，链接也肯定会断开，所以服务器端主动断开
-        try(Socket socket = registerProject.remove(projectName)) {
+        try{
+            Socket socket = registerProject.get(projectName);
             if (socket == null) {
                 return;
             }

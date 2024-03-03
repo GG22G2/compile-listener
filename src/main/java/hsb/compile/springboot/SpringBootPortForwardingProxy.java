@@ -131,6 +131,7 @@ public class SpringBootPortForwardingProxy {
                         CompilerManager compilerManager = CompilerManager.getInstance(project);
                         compilerManager.make((aborted, errors, warnings, compileContext) -> {
                             LOG.info("重新编译完成");
+                            System.out.println("重新编译完成");
                             taskTimeLine.changeState(TaskTimeLine.UNCERTAIN);
                             //编译完成后，再等待一秒，开始建立连接
 

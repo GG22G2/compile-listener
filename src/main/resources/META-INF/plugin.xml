@@ -33,5 +33,6 @@
 <!--        <compiler.task execute="BEFORE" implementation="hsb.compile.demo.BeforeCompilerListener"/>-->
         <postStartupActivity implementation="hsb.compile.InitOnProjectActivity"/>
         <toolWindow id="springboot端口" factoryClass="hsb.compile.window.SpringbootPortShow"/>
+        <runConfigurationExtension implementation="hsb.compile.demo.MyRunConfigurationExtension"/>
     </extensions>
 </idea-plugin>
