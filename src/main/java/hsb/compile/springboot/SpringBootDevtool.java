@@ -141,7 +141,7 @@ public class SpringBootDevtool {
 
                             LOG.warn("识别到springboot项目启动，开启端口转发");
 
-                            RunningSpringBootProject runningSpringBootProject = new RunningSpringBootProject(project, taskTimeLine, processID, appConfig.getName(), appConfig.getMainClassName(), null);
+                            RunningSpringBootProject runningSpringBootProject = new RunningSpringBootProject(project, taskTimeLine, processID, appConfig.getName(), appConfig.getMainClassName(), List.of());
                             RunningSpringbootManager service = project.getService(RunningSpringbootManager.class);
 
                             service.addProject(runningSpringBootProject);

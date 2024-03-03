@@ -3,6 +3,7 @@ package hsb.compile.service;
 import com.intellij.openapi.project.Project;
 import hsb.compile.TaskTimeLine;
 import hsb.compile.springboot.SpringBootPortForwardingProxy;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class RunningSpringBootProject {
     }
 
 
-    public RunningSpringBootProject(Project project, TaskTimeLine taskTimeLine, int pid, String name, String mainClass, List<PortPeer> portPeers) {
+    public RunningSpringBootProject(Project project, TaskTimeLine taskTimeLine, int pid, String name, String mainClass,@NotNull List<PortPeer> portPeers) {
         this.project = project;
         this.taskTimeLine = taskTimeLine;
         this.pid = pid;

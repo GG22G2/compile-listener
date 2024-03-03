@@ -5,6 +5,7 @@ import com.intellij.openapi.compiler.CompilationStatusListener;
 import com.intellij.openapi.compiler.CompileContext;
 
 import com.intellij.openapi.project.Project;
+import hsb.compile.service.RunningSpringbootManager;
 import hsb.compile.service.SocketService;
 
 /**
@@ -35,10 +36,6 @@ public class MyCompilationStatusListener implements CompilationStatusListener {
         //todo 判断是不是有编译错误
         printMsg(change);
         change=false;
-//        System.out.println("aborted："+aborted);
-//        System.out.println("errors："+errors);
-//        System.out.println("warnings："+warnings);
-
     }
 
     @Override
@@ -63,7 +60,14 @@ public class MyCompilationStatusListener implements CompilationStatusListener {
             System.out.println("编译完成，但可能没有文件改变");
         }
         SocketService service = ApplicationManager.getApplication().getService(SocketService.class);
-        service.send(project.getName());
+        //todo 这里应该改成进程pid
+
+        RunningSpringbootManager springbootManager = project.getService(RunningSpringbootManager.class);
+        int[] pids= springbootManager.getAllPid();
+        for (int pid : pids) {
+            service.send(pid);
+        }
+
     }
 
 

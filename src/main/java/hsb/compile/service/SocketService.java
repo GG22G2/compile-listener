@@ -91,14 +91,14 @@ public final class SocketService implements Disposable {
 
 
 
-    public void send(String projectName) {
+    public void send(int pid) {
         try{
-            Socket socket = registerProject.get(projectName);
+            Socket socket = registerProject.get(pid);
             if (socket == null) {
                 return;
             }
             if (socket.isClosed()) {
-                registerProject.remove(projectName);
+                registerProject.remove(pid);
                 return;
             }
             //随便写点

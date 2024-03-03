@@ -31,10 +31,18 @@ public final class RunningSpringbootManager implements Disposable {
         if (runningSpringBootProject==null){
             return;
         }
-        runningSpringBootProject.portPeers = portPeers;
-        for (Listener listener : listeners) {
-            listener.addProject(runningSpringBootProject);
+        if (portPeers.isEmpty()){
+            return;
         }
+        if (runningSpringBootProject.portPeers.isEmpty()){
+            runningSpringBootProject.portPeers = portPeers;
+            for (Listener listener : listeners) {
+                listener.addProject(runningSpringBootProject);
+            }
+        }else {
+            runningSpringBootProject.portPeers = portPeers;
+        }
+
     }
 
     public void closeProject(int pid) {
@@ -61,5 +69,9 @@ public final class RunningSpringbootManager implements Disposable {
         if (runningSpringBootProject!=null){
             runningSpringBootProject.createNettyProxy(portPeer);
         }
+    }
+
+    public int[] getAllPid() {
+        return springBootProject.keySet().stream().mapToInt(x -> x.intValue()).toArray();
     }
 }
