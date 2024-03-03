@@ -28,9 +28,10 @@ public final class RunningSpringbootManager implements Disposable {
 
     public void addProjectPortPeer(int pid, List<PortPeer> portPeers) {
         RunningSpringBootProject runningSpringBootProject = springBootProject.get(pid);
-        if (runningSpringBootProject != null) {
-            runningSpringBootProject.portPeers = portPeers;
+        if (runningSpringBootProject==null){
+            return;
         }
+        runningSpringBootProject.portPeers = portPeers;
         for (Listener listener : listeners) {
             listener.addProject(runningSpringBootProject);
         }

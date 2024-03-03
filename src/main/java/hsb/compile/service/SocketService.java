@@ -1,11 +1,17 @@
 package hsb.compile.service;
 
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +28,7 @@ public final class SocketService implements Disposable {
     int port = 60012;
     Thread acceptThread;
 
-    Map<String, Socket> registerProject = new ConcurrentHashMap<>();
+    Map<Integer, Socket> registerProject = new ConcurrentHashMap<>();
 
     public SocketService() {
         try {
@@ -34,21 +40,46 @@ public final class SocketService implements Disposable {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         Socket socket = serverSocket.accept();
-                        String projectName = readProjectName(socket);
-                        if (projectName == null) {
-                            socket.close();
-                        } else {
-                            Socket oldSocket = registerProject.get(projectName);
+
+
+                        DataInputStream in= new DataInputStream(socket.getInputStream());
+                        int type = in.readInt();
+
+                        if (type==1){
+                            //更新后的通知socket
+                            int pid = in.readInt();
+
+                            Socket oldSocket = registerProject.get(pid);
                             if (oldSocket != null) {
                                 oldSocket.close();
                             }
-                            registerProject.put(projectName, socket);
+                            registerProject.put(pid, socket);
+
+                        }else if (type==2){
+                            //用来发送进程的web端口号
+                            int pid = in.readInt();
+                            int port = in.readInt();
+
+                            //通知进程对应的端口
+
+                            //ApplicationManager.getApplication().p
+
+
+                            @NotNull Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
+                            for (Project openProject : openProjects) {
+                                RunningSpringbootManager service = openProject.getService(RunningSpringbootManager.class);
+                                //service.
+                                List<PortPeer> portPeers = new ArrayList<>(1);
+                                portPeers.add(new PortPeer(port, 8080));
+                                service.addProjectPortPeer(pid,portPeers);
+                            }
+                            socket.close();
                         }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                         break;
                     }
-
                 }
             });
             acceptThread.start();
@@ -58,17 +89,7 @@ public final class SocketService implements Disposable {
         }
     }
 
-    private String readProjectName(Socket socket) {
-        try {
-            InputStream in = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            return reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public void send(String projectName) {
         try{

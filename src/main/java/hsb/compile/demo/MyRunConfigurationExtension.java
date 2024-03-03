@@ -6,6 +6,7 @@ import com.intellij.execution.RunConfigurationExtension;
 import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.*;
 import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MyRunConfigurationExtension extends RunConfigurationExtension {
 
+    public static final Key<Boolean> SPRINGBOOT = new Key<>("SPRINGBOOT_PROJECT");
 
     @Override
     public <T extends RunConfigurationBase<?>> void updateJavaParameters(@NotNull T configuration, @NotNull JavaParameters params, @Nullable RunnerSettings runnerSettings) throws ExecutionException {
@@ -38,7 +40,8 @@ public class MyRunConfigurationExtension extends RunConfigurationExtension {
             // 检查 main 类是否有 @SpringBootApplication 注解
             if (hasSpringBootApplicationAnnotation(mainClass)) {
                 PathsList classPath = params.getClassPath();
-                classPath.add("G:\\kaifa_environment\\code\\java\\starter_demo\\target\\starter_demo-1.0.jar");
+                classPath.add("G:\\kaifa_environment\\code\\java\\starter_demo\\target\\port-1.0.jar");
+                configuration.putUserData(SPRINGBOOT,true);
             }
         }
     }

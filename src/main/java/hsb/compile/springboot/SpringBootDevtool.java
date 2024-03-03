@@ -25,6 +25,7 @@ import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.impl.source.tree.java.PsiAnnotationImpl;
 import com.intellij.util.messages.MessageBusConnection;
 import hsb.compile.TaskTimeLine;
+import hsb.compile.demo.MyRunConfigurationExtension;
 import hsb.compile.service.PortPeer;
 import hsb.compile.service.RunningSpringBootProject;
 import hsb.compile.service.RunningSpringbootManager;
@@ -113,13 +114,20 @@ public class SpringBootDevtool {
                 }
 
 
+
                 RunProfile runProfile = env.getRunProfile();
                 Project project = env.getProject();
 
                 if (runProfile instanceof ApplicationConfiguration appConfig) {
-
-
                     if (handler instanceof KillableProcessHandler p) {
+
+
+                        Boolean userData = appConfig.getUserData(MyRunConfigurationExtension.SPRINGBOOT);
+                        if (userData==null){
+                            return;
+                        }
+
+
                         Process process = p.getProcess();
                         int processID = OSProcessUtil.getProcessID(process);
                         System.out.println("启动进程pid:" + processID);
@@ -128,11 +136,6 @@ public class SpringBootDevtool {
                             // 使用 PSI 框架查找 main 类
                             PsiClass mainClass = appConfig.getMainClass();
                             if (mainClass == null) {
-                                return;
-                            }
-
-                            // 检查 main 类是否有 @SpringBootApplication 注解
-                            if (!hasSpringBootApplicationAnnotation(mainClass)) {
                                 return;
                             }
 
@@ -145,7 +148,7 @@ public class SpringBootDevtool {
                             AtomicBoolean stop = runningSpringBootProject.stop;
 
 
-                            getProcessListenerPort(processID, stop);
+                            //getProcessListenerPort(processID, stop);
                             try {
                                 handler.addProcessListener(new ProcessListener() {
                                     @Override
@@ -176,69 +179,69 @@ public class SpringBootDevtool {
     /**
      * 获取进程监听的端口列表
      */
-    private void getProcessListenerPort(int processID, AtomicBoolean stopSignal) {
-
-        //获取当前启动的springboot项目监听的端口列表
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000*17);
-            } catch (InterruptedException e) {
-
-            }
-            int findCount = 0;
-            List<Integer> ports = new ArrayList<>();
-            while (!stopSignal.get() && findCount < 2) {
-                try {
-                    ports.clear();
-                    Thread.sleep(1000);
-                    // 使用系统命令获取监听的端口
-                    GeneralCommandLine cmd = new GeneralCommandLine("netstat", "-ano");
-
-                    // 执行命令获取输出结果
-                    ProcessOutput output = ExecUtil.execAndGetOutput(cmd);
-                    List<String> stdoutLines = output.getStdoutLines();
-                    String pid = String.valueOf(processID);
-                    for (String stdoutLine : stdoutLines) {
-                        String lineInfo = stdoutLine.trim().toLowerCase();
-
-                        if (lineInfo.startsWith("tcp")) {
-                            String[] split = lineInfo.split("\s+");
-                            if (split[4].equals(pid) && split[0].equals("tcp") && split[3].equals("listening")) {
-                                try {
-                                    String listenPort = split[1].split(":")[1];
-                                    System.out.println("发现一个应用的监听端口:" + listenPort);
-                                    ports.add(Integer.valueOf(listenPort));
-                                } catch (Exception e) {
-
-                                }
-
-                            }
-                        }
-                    }
-                    if (!ports.isEmpty()) {
-                        findCount++;
-                    }
-                } catch (Exception e) {
-
-                }
-            }
-
-
-            if (!stopSignal.get() && !ports.isEmpty()) {
-                RunningSpringbootManager service = project.getService(RunningSpringbootManager.class);
-
-                List<PortPeer> portPeers = new ArrayList<>(ports.size());
-                for (Integer port : ports) {
-                    portPeers.add(new PortPeer(port, 8080));
-                }
-                service.addProjectPortPeer(processID,portPeers);
-            }
-
-
-        }).start();
-
-
-    }
+//    private void getProcessListenerPort(int processID, AtomicBoolean stopSignal) {
+//
+//        //获取当前启动的springboot项目监听的端口列表
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(1000*17);
+//            } catch (InterruptedException e) {
+//
+//            }
+//            int findCount = 0;
+//            List<Integer> ports = new ArrayList<>();
+//            while (!stopSignal.get() && findCount < 2) {
+//                try {
+//                    ports.clear();
+//                    Thread.sleep(1000);
+//                    // 使用系统命令获取监听的端口
+//                    GeneralCommandLine cmd = new GeneralCommandLine("netstat", "-ano");
+//
+//                    // 执行命令获取输出结果
+//                    ProcessOutput output = ExecUtil.execAndGetOutput(cmd);
+//                    List<String> stdoutLines = output.getStdoutLines();
+//                    String pid = String.valueOf(processID);
+//                    for (String stdoutLine : stdoutLines) {
+//                        String lineInfo = stdoutLine.trim().toLowerCase();
+//
+//                        if (lineInfo.startsWith("tcp")) {
+//                            String[] split = lineInfo.split("\s+");
+//                            if (split[4].equals(pid) && split[0].equals("tcp") && split[3].equals("listening")) {
+//                                try {
+//                                    String listenPort = split[1].split(":")[1];
+//                                    System.out.println("发现一个应用的监听端口:" + listenPort);
+//                                    ports.add(Integer.valueOf(listenPort));
+//                                } catch (Exception e) {
+//
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//                    if (!ports.isEmpty()) {
+//                        findCount++;
+//                    }
+//                } catch (Exception e) {
+//
+//                }
+//            }
+//
+//
+//            if (!stopSignal.get() && !ports.isEmpty()) {
+//                RunningSpringbootManager service = project.getService(RunningSpringbootManager.class);
+//
+//                List<PortPeer> portPeers = new ArrayList<>(ports.size());
+//                for (Integer port : ports) {
+//                    portPeers.add(new PortPeer(port, 8080));
+//                }
+//                service.addProjectPortPeer(processID,portPeers);
+//            }
+//
+//
+//        }).start();
+//
+//
+//    }
 
     private boolean hasSpringBootApplicationAnnotation(PsiClass psiClass) {
         PsiModifierList modifierList = psiClass.getModifierList();
